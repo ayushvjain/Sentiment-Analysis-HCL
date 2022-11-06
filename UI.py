@@ -27,7 +27,7 @@ class tkinterApp(tk.Tk):
 
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (Sentiment_Analysis, Page1, Page2, Page4, Page5, Page6, Page7):
+        for F in (Sentiment_Analysis, Page1, Page2, Page4, Page5, Page6):
 
             frame = F(container, self)
 
@@ -95,7 +95,7 @@ class Page1(tk.Frame):
         # button to show frame 2 with text
         # layout2
         button2 = ttk.Button(self, text ="Get Analysis",
-                            command = lambda : define(parent,controller,T))
+                            command = lambda : define(parent,controller,T.get("1.0", "end-1c")))
     
         # putting the button in its place by
         button2.grid(row = 2, column = 1, padx = 10, pady = 10)
@@ -108,7 +108,7 @@ class Page1(tk.Frame):
 
 
 def define(parent,controller,T):
-    tp = Project.imp_data(T.get("1.0", "end-1c"))[0]
+    tp = Project.imp_data(T)[0]
     ttt = Page3(parent, controller,tp)
     app.frames[Page3] = ttt
     ttt.grid(row = 0, column = 0, sticky ="nsew")
@@ -180,7 +180,7 @@ class Page4(tk.Frame):
         button2.grid(row = 2, column = 1, padx = 10, pady = 10)   
                      
         button3 = ttk.Button(self, text = "Get Text format",
-                            command = lambda : controller.show_frame(Page7))
+                            command = lambda : define_aud(parent, controller, self.record_a))
         button3.grid(row = 3, column = 1, padx = 10, pady = 10)
                      
         button4 = ttk.Button(self, text = "Get Analysis",
@@ -193,11 +193,12 @@ class Page4(tk.Frame):
     
     def start_audio(self):
         self.variable_r,self.audio = att.record_audio()
+        print(self.audio)
 
     def stop_audio(self):
         self.record_a = att.print_audio(self.variable_r,self.audio)
-        text_of_audio = record_a
-        print(record_a)
+        text_of_audio = self.record_a
+        print(self.record_a)
 
 class Page5(tk.Frame):
     def __init__(self, parent, controller):
@@ -214,7 +215,7 @@ class Page5(tk.Frame):
         button2.grid(row = 1, column = 1, padx =10, pady=10)
         
         button3 = ttk.Button(self, text = "Get text format",
-                            command = lambda : controller.show_frame(Page6))
+                            command = lambda : define_aud(parent, controller, self.record_a))
         button3.grid(row = 2, column = 1, padx =10, pady=10)
         
         button4 = ttk.Button(self, text = "Get Analysis",
@@ -239,19 +240,25 @@ class Page6(tk.Frame):
     
         button1.grid(row = 2, column = 1, padx = 10, pady = 10)
 
+def define_aud(parent,controller,T):
+    print(text_of_audio)
+    ttt1 = Page7(parent, controller,T)
+    app.frames[Page7] = ttt1
+    ttt1.grid(row = 0, column = 0, sticky ="nsew")
+    controller.show_frame(Page7)
+
 #Eight Window for Text format of audio
 class Page7(tk.Frame):
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, T):
         tk.Frame.__init__(self, parent)
         p1 = controller.frames[Page4]
         label = ttk.Label(self, text = "Record Audio", font = LARGEFONT)
         label.grid(row=0, column = 4, padx = 10, pady=10)
-        
-        label = ttk.Label(self, text = p1.record_a)
+        label = ttk.Label(self, text = T)
         label.grid(row=1, column = 1, padx = 10, pady=10)
 
         button1 = ttk.Button(self, text ="Get Analysis",
-                            command = lambda : controller.show_frame(Page3))
+                            command = lambda : define(parent, controller, T))
     
         button1.grid(row = 2, column = 1, padx = 10, pady = 10)
 
